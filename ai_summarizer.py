@@ -2,19 +2,25 @@ from dotenv import load_dotenv
 import os 
 from openai import OpenAI
 
-load_dotenv('.env')
 
-api_key = os.getenv('chat_gpt')
+def get_mpd_details(description):
+    load_dotenv('.env')
 
-client = OpenAI(api_key=api_key)
+    api_key = os.getenv('chat_gpt')
 
-completion = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[
-        {"role": "system", "content": """
-        You are an assistant summarizing articles. Your goal is to extract only factual, relevant information."""},
-        {"role": "user", "content": f"what is the capital of france?"}
-    ]
-)
+    client = OpenAI(api_key=api_key)
 
-print(completion.choices[0].message.content)
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Return JSON array"},
+            {"role": "user", "content": f"given this youtube title can you give me JSON results of the artist, album and song: {description}"}
+        ]
+    )
+    return(completion.choices[0].message.content)
+
+
+
+details = get_mpd_details(description='Pink Floyd Another Brick In The Wall')
+
+print(details)
