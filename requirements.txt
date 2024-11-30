@@ -1,2 +1,5 @@
 yt_dlp
 streamlit
+dotenv
+python-dotenv
+openai
