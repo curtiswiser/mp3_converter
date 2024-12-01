@@ -3,7 +3,7 @@ import os
 from openai import OpenAI
 
 
-def get_mpd_details(description):
+def get_mp3_details(description):
     load_dotenv('.env')
 
     api_key = os.getenv('chat_gpt')
@@ -21,6 +21,3 @@ def get_mpd_details(description):
 
 
 
-details = get_mpd_details(description='Pink Floyd Another Brick In The Wall')
-
-print(details)

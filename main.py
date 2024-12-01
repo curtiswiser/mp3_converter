@@ -1,42 +1,63 @@
-import yt_dlp  # Ensure yt_dlp is imported
+import yt 
+import ai_summarizer
+import json
+from mutagen.easyid3 import EasyID3
+import shutil
+import os
+
+def convert_to_json(data): 
+    data = data.replace('`','')
+    data = data.replace('json','')
+    data = data.replace('[','')
+    data = data.replace(']','')
+    data = data.strip()
+    return json.loads(data)
 
 
+url = 'https://www.youtube.com/watch?v=_oYSiPBUuC8' 
 
 
-def download_mp3(url, path):
-    link = "https://www.youtube.com/watch?v=bZwxTX2pWmw"
-    save_path = '/home/curtiswiser/mp3_converter/downloads/%(title)s.%(ext)s' 
-    # Download options
-    ydl_opts = {
-        'format': 'bestaudio/best',  # Choose the best audio format
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-        'outtmpl': save_path,
-    }
+def process_urls(url): 
+    #download tmp file: 
+    yt.download_mp3(url=url)
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([link])  # Perform the download
+    #get metadata for mp3 file
+    url_description = yt.extract_metadata(url)
+    print(url_description)
 
-def extract_metadata(link):
-    with yt_dlp.YoutubeDL() as ydl:
-        # Extract video info (without downloading)
-        info_dict = ydl.extract_info(link, download=False)
-        
-        # Attempt to extract the artist name (depends on video metadata)
-        artist_name = info_dict.get('artist', None)  # Try to get the 'artist' field
-        if artist_name:
-            print(f"Artist: {artist_name}")
-        else:
-            print("Artist name not found.")
-        
-        # You can also extract other metadata such as the title, album, etc.
-        video_title = info_dict.get('title', 'Unknown Title')
-        print(f"Title: {video_title}")
+    #summarize artist info
+    data = ai_summarizer.get_mp3_details(description=url_description)
+    #convert to json
+    json_data = convert_to_json(data)
 
-link = 'https://www.youtube.com/watch?v=bZwxTX2pWmw' 
-extract_metadata(link)
 
+    # # Load the MP3 file
+    audio = EasyID3("downloads/tmp_files/tmp_mp3.mp3")
+
+    # Edit metadata
+    audio["title"] = json_data['song']
+    audio["artist"] = json_data['artist']
+    audio["album"] = json_data['album']
+
+    # # Save the changes
+    audio.save()
+
+    # New file name based on the title
+    title = json_data['song']
+    new_file_name = f"{title}.mp3"
+
+    # Replace characters not allowed in filenames
+    valid_file_name = "".join(c if c.isalnum() or c in " ._-" else "_" for c in new_file_name)
+
+    # Target path in the Downloads folder
+    artist = json_data['artist']
+    album = json_data['album']
+    downloads_folder = f"downloads/music/{artist}/{album}"
+    target_path = os.path.join(downloads_folder, valid_file_name)
+    # Create the directories if they don't exist
+    os.makedirs(downloads_folder, exist_ok=True)
+    # Move and rename the file
+    shutil.move("downloads/tmp_files/tmp_mp3.mp3", target_path)
+
+    print(f"File moved and renamed to: {target_path}")
 
