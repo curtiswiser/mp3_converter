@@ -12,10 +12,17 @@ def get_mp3_details(description):
 
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Return JSON array"},
-            {"role": "user", "content": f"given this youtube title can you give me JSON results of the artist, album and song: {description}"}
-        ]
+       messages = [
+                        {"role": "system", "content": "Respond with a single JSON array."},
+                        {
+                            "role": "user",
+                            "content": (
+                                f"Given the following YouTube title, provide a JSON object containing the fields: "
+                                f'"artist", "album", and "song". Ensure that each field has a non-empty value. '
+                                f'Here is the title: "{description}"'
+                            ),
+                        },
+                    ]
     )
     return(completion.choices[0].message.content)
 
