@@ -47,11 +47,9 @@ def process_urls(url):
     except: 
         print(f"Error setting album tag")
 
-    
     # # Save the changes
     audio.save()
 
-    
     # Explicitly close the file handle (though EasyID3 should manage this)
     audio = None 
 
