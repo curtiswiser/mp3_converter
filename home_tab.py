@@ -9,7 +9,7 @@ class HomeTab(tk.Frame):
         # Add Home tab components
         label = tk.Label(self, text="Paste Youtube URL:  ", font=("Helvetica", 20))
         label.pack(pady=5)
-        
+
         sub_label = tk.Label(self, text="Do not use playlists!!!", font=("Helvetica", 10))
         sub_label.pack(pady=0)
 
@@ -37,11 +37,13 @@ class HomeTab(tk.Frame):
 
         label_artist = tk.Label(frame, text="Artist:", font=("Helvetica", 12))
         label_artist.grid(row=0, column=0, sticky="w", padx=5, pady=5)
+        
         self.text_box_artist = tk.Text(frame, height=1, width=40)
         self.text_box_artist.grid(row=0, column=1, padx=5, pady=5)
 
         label_album = tk.Label(frame, text="Album:", font=("Helvetica", 12))
         label_album.grid(row=1, column=0, sticky="w", padx=5, pady=5)
+        
         self.text_box_album = tk.Text(frame, height=1, width=40)
         self.text_box_album.grid(row=1, column=1, padx=5, pady=5)
 
