@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+import mp3_processing
+import threading
 
 
 class HomeTab(tk.Frame):
@@ -22,14 +24,12 @@ class HomeTab(tk.Frame):
         self.url_entry = tk.Entry(url_frame, width=50)
         self.url_entry.pack(side=tk.LEFT, padx=5)
 
-        button = tk.Button(self, text="Download", command=self.download)
+        button = tk.Button(self, text="Download", command=self.start_download)
         button.pack(pady=10)
 
-        self.progress_bar = ttk.Progressbar(self, mode="determinate", length=300)
-        self.progress_bar.pack(pady=5)
-
-        self.progress_label = tk.Label(self, text="", font=("Helvetica", 14))
-        self.progress_label.pack(pady=5)
+        #download status label: 
+        self.download_label = tk.Label(self, text= "", font=("Helvetica", 12))
+        self.download_label.pack(pady=5)
 
         # Additional metadata fields
         frame = tk.Frame(self)
@@ -52,6 +52,21 @@ class HomeTab(tk.Frame):
         self.text_box_title = tk.Text(frame, height=1, width=40)
         self.text_box_title.grid(row=2, column=1, padx=5, pady=5)
 
+    def start_download(self): 
+        self.download_label.config(text="DOWNLOADING...", fg="purple")
+        thread = threading.Thread(target=self.download, daemon=True)
+        thread.start()
+
     def download(self):
-        # Placeholder for download functionality
-        print("Download started!")
+        #Download file to tmp location
+        # Change message to indicate the download is starting
+        self.download_label.config(text="DOWNLOADING...", fg="purple")
+        
+        try: 
+            self.download_label.config(text="DOWNLOADING...", fg="purple")
+            url_txt = self.url_entry.get()
+            mp3_processing.download_mp3(url_txt)
+            self.download_label.config(text="DOWNLOAD SUCCESSFUL", fg="green")
+        except: 
+            self.download_label.config(text="DOWNLOAD FAILED", fg="red")
+

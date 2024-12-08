@@ -24,18 +24,19 @@ class SettingsTab(tk.Frame):
 
         self.path_entry = tk.Entry(path_frame, width= 50)
         self.path_entry.pack(side=tk.LEFT, fill=tk.X, expand= True, padx= 5)
-        self.path_entry.insert(0, self.settings.get("default_path"))
+        self.path_entry.insert(0, self.settings.get("download_path", ""))
 
         #add function to browser button 
         browse_button = tk.Button(path_frame, text='Browse', command=self.pick_folder)
         browse_button.pack(side=tk.RIGHT, padx=5)
 
         # Auto rename checkbox
-        self.auto_rename_var = tk.BooleanVar()
-        auto_rename_check = tk.Checkbutton(
-            self, text="Enable AI Naming Suggestions", variable=self.auto_rename_var
+        self.ai_suggestion = tk.BooleanVar(value=self.settings.get("Enable_AI", False))
+
+        ai_suggestion = tk.Checkbutton(
+            self, text="Enable AI Naming Suggestions", variable=self.ai_suggestion
         )
-        auto_rename_check.pack(anchor="w", padx=10, pady=5)
+        ai_suggestion.pack(anchor="w", padx=10, pady=5)
 
         # Frame for API Key label and entry
         api_frame = tk.Frame(self)
@@ -60,9 +61,9 @@ class SettingsTab(tk.Frame):
 
     def save_settings(self):
         """Save current settings to the settings file."""
-        self.settings["default_path"] = self.path_entry.get()
+        self.settings["download_path"] = self.path_entry.get()
         self.settings["api_key"] = self.api_key_entry.get()
-        self.settings["Enable"] = self.auto_rename_var.get()
+        self.settings["Enable_AI"] = self.ai_suggestion.get()
 
         try:
             settings.save_settings(self.settings)
