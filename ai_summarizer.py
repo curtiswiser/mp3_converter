@@ -1,7 +1,7 @@
-from dotenv import load_dotenv
-import os 
+
 from openai import OpenAI
 import json 
+import settings 
 
 
 
@@ -14,9 +14,9 @@ def convert_to_json(data):
     return json.loads(data)
 
 def get_mp3_details(description):
-    load_dotenv('.env')
+    all_settings = settings.load_settings()
 
-    api_key = os.getenv('chat_gpt')
+    api_key = all_settings['api_key']
 
     client = OpenAI(api_key=api_key)
 
