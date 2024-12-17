@@ -3,7 +3,6 @@ from tkinter import ttk
 from home_tab import HomeTab
 from settings_tab import SettingsTab
 
-
 class MP3ExtractorApp(tk.Tk):
     def __init__(self):
         super().__init__()

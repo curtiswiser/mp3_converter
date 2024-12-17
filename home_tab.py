@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import mp3_processing
 import threading
+import settings 
 
 
 class HomeTab(tk.Frame):
@@ -64,6 +65,9 @@ class HomeTab(tk.Frame):
         thread.start()
 
     def download(self):
+        #check AI settings: 
+        all_settings = settings.load_settings()
+        ai_setting = all_settings['Enable_AI']
         #Download file to tmp location
         # Change message to indicate the download is starting
         self.download_label.config(text="DOWNLOADING...", fg="purple")
@@ -72,7 +76,8 @@ class HomeTab(tk.Frame):
             url_txt = self.url_entry.get()
             mp3_object  = mp3_processing.download_mp3(url_txt)
             self.download_label.config(text="DOWNLOAD SUCCESSFUL", fg="green")
-            self.update_song_details(mp3_object )
+            if ai_setting: 
+                self.update_song_details(mp3_object)
         except Exception as e: 
             self.download_label.config(text=f"DOWNLOAD FAILED: {e}", fg="red")
 
@@ -97,6 +102,6 @@ class HomeTab(tk.Frame):
             # Call the rename_mp3_metadata function with the retrieved values
             mp3_processing.rename_mp3_metadata(title, artist, album)
             mp3_processing.move_mp3(title, artist, album)
-            self.download_label.config(text="Metadata saved successfully", fg="green")
+            self.download_label.config(text="MP3 SAVED SUCCESSFULLY", fg="pink")
         except Exception as e:
             self.download_label.config(text=f"Failed to save metadata: {e}", fg="red")
